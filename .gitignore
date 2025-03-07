@@ -21,6 +21,9 @@
 # Fortran module files
 *.mod
 
+# RiderLink
+Plugins/Developer/RiderLink/
+
 # Compiled Static libraries
 *.lai
 *.la
