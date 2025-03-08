@@ -18,10 +18,19 @@ public:
 	// Sets default values for this actor's properties
 	ABaseGeometryActor();
 
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* BaseMesh;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float Amplitude = 50.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float Frequency = 2.0f;
+	
 	UPROPERTY(EditAnywhere, Category = "Weapon")
 	int32 WeaponsNum = 4;
 
@@ -42,6 +51,11 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	FVector InitialLocation;
+	
+	/** Print transform data of this actor using UE_LOG(). */
+	void PrintTransform();
+	
 	/** Print types with UE_LOG(). */
 	void PrintTypes();
 
