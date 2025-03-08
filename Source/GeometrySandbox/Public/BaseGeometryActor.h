@@ -30,4 +30,7 @@ private:
 	/** Print types with UE_LOG(). */
 	void PrintTypes();
 
+	/** Print FString types with UE_LOG(). */
+	void PrintStringTypes();
+
 };
