@@ -7,6 +7,34 @@
 #include "BaseGeometryActor.generated.h"
 
 /**
+ * 
+ */
+UENUM(BlueprintType)
+enum class EMovementType : uint8
+{
+	Sin,
+	Static
+};
+
+/**
+ * 
+ */
+USTRUCT(BlueprintType)
+struct FGeometryData
+{
+	GENERATED_USTRUCT_BODY()
+	
+	UPROPERTY(VisibleAnywhere, Category = "Movement")
+	EMovementType MovementType = EMovementType::Static;
+	
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float Amplitude = 50.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float Frequency = 2.0f;
+};
+
+/**
  *
  */
 UCLASS()
@@ -24,12 +52,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere, Category = "Movement")
-	float Amplitude = 50.0f;
-
-	UPROPERTY(EditAnywhere, Category = "Movement")
-	float Frequency = 2.0f;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Geometry Data")
+	FGeometryData GeometryData;
 	
 	UPROPERTY(EditAnywhere, Category = "Weapon")
 	int32 WeaponsNum = 4;
@@ -52,6 +77,8 @@ public:
 
 private:
 	FVector InitialLocation;
+
+	void HandleMovement();
 	
 	/** Print transform data of this actor using UE_LOG(). */
 	void PrintTransform();
