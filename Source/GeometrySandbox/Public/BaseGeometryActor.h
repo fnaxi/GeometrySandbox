@@ -24,7 +24,7 @@ struct FGeometryData
 {
 	GENERATED_USTRUCT_BODY()
 	
-	UPROPERTY(VisibleAnywhere, Category = "Movement")
+	UPROPERTY(EditAnywhere, Category = "Movement")
 	EMovementType MovementType = EMovementType::Static;
 	
 	UPROPERTY(EditAnywhere, Category = "Movement")
@@ -32,6 +32,9 @@ struct FGeometryData
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float Frequency = 2.0f;
+	
+	UPROPERTY(EditAnywhere, Category = "Design")
+	FLinearColor Color = FLinearColor::Black;
 };
 
 /**
@@ -53,7 +56,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(VisibleAnywhere, Category = "Geometry Data")
+	UPROPERTY(EditAnywhere, Category = "Geometry Data")
 	FGeometryData GeometryData;
 	
 	UPROPERTY(EditAnywhere, Category = "Weapon")
@@ -78,6 +81,8 @@ public:
 private:
 	FVector InitialLocation;
 
+	void SetColor(const FLinearColor& Color);
+	
 	void HandleMovement();
 	
 	/** Print transform data of this actor using UE_LOG(). */

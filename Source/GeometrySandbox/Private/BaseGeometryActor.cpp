@@ -25,6 +25,8 @@ void ABaseGeometryActor::BeginPlay()
 	// PrintTransform();
 	// PrintStringTypes();
 	// PrintTypes();
+
+	SetColor(GeometryData.Color);
 }
 
 // Called every frame
@@ -33,6 +35,15 @@ void ABaseGeometryActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	HandleMovement();
+}
+
+void ABaseGeometryActor::SetColor(const FLinearColor& Color)
+{
+	UMaterialInstanceDynamic* DynMaterial = BaseMesh->CreateAndSetMaterialInstanceDynamic(0);
+	if (DynMaterial)
+	{
+		DynMaterial->SetVectorParameterValue("Color", Color);
+	}
 }
 
 void ABaseGeometryActor::HandleMovement()
