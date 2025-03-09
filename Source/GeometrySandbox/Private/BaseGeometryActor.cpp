@@ -27,6 +27,8 @@ void ABaseGeometryActor::BeginPlay()
 	// PrintTypes();
 
 	SetColor(GeometryData.Color);
+
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ABaseGeometryActor::OnTimerFired, GeometryData.TimerRate, true);
 }
 
 // Called every frame
@@ -105,5 +107,20 @@ void ABaseGeometryActor::PrintStringTypes()
 
 	GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Magenta, Name);
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, Name, true, FVector2D(1.5f, 1.5f));
+}
+
+void ABaseGeometryActor::OnTimerFired()
+{
+	if (++TimerCount <= MaxTimerCount)
+	{
+		const FLinearColor NewColor = FLinearColor::MakeRandomColor();
+		UE_LOG(LogBaseGeometry, Display, TEXT("Color to set up: %s"), *NewColor.ToString())
+		SetColor(NewColor);
+	}
+	else
+	{
+		UE_LOG(LogBaseGeometry, Warning, TEXT("Timer has been stopped!"))
+		GetWorldTimerManager().ClearTimer(TimerHandle);
+	}
 }
 
