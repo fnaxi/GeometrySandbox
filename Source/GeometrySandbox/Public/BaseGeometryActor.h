@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "BaseGeometryActor.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnColorChanged, const FLinearColor&, Color, const FString&, Name);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTimerFinished, AActor*);
+
 /**
  * 
  */
@@ -24,20 +27,31 @@ struct FGeometryData
 {
 	GENERATED_USTRUCT_BODY()
 	
-	UPROPERTY(EditAnywhere, Category = "Movement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	EMovementType MovementType = EMovementType::Static;
 	
-	UPROPERTY(EditAnywhere, Category = "Movement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float Amplitude = 50.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Movement")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float Frequency = 2.0f;
 	
-	UPROPERTY(EditAnywhere, Category = "Design")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Design")
 	FLinearColor Color = FLinearColor::Black;
 
 	UPROPERTY(EditAnywhere, Category = "Design")
 	float TimerRate = 3.0f;
+
+	FString ToString() const
+	{
+		FString MoveTypeStr = MovementType == EMovementType::Sin ? "Sin" : "Static";
+		FString ColorStr = Color.ToString();
+
+		FString Formatted = FString::Printf(
+			TEXT(" === GEOMETRY DATA === \n MoveType: %s \n Amplitude: %f \n Frequency: %f \n Color: %s \n TimerRate: %f \n"),
+			*MoveTypeStr, Amplitude, Frequency, *ColorStr, TimerRate);
+		return Formatted;
+	}
 };
 
 /**
@@ -54,12 +68,17 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BaseMesh;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnColorChanged OnColorChanged;
+	
+	FOnTimerFinished OnTimerFinished;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(EditAnywhere, Category = "Geometry Data")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Geometry Data")
 	FGeometryData GeometryData;
 	
 	UPROPERTY(EditAnywhere, Category = "Weapon")
@@ -77,11 +96,17 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	bool bHasWeapon = true;
 	
+	/** Overridable function called whenever this actor is being removed from a level */
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
 	void SetGeometryData(const FGeometryData& Data) { GeometryData = Data; };
+
+	UFUNCTION(BLueprintCallable)
+	FGeometryData GetGeometryData() const { return GeometryData; };
 	
 private:
 	FVector InitialLocation;
